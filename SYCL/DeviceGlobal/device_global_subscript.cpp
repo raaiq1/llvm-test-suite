@@ -19,8 +19,8 @@
 // NOTE: USE_DEVICE_IMAGE_SCOPE needs both kernels to be in the same image so
 //       we set -fsycl-device-code-split=per_source.
 
+#include <iostream>
 #include <sycl/sycl.hpp>
-
 using namespace sycl;
 using namespace sycl::ext::oneapi::experimental;
 
