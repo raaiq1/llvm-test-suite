@@ -54,7 +54,7 @@ int main(int argc, const char **argv) {
   for (int i = 0; i < sizeof(expected) / sizeof(T); ++i) {
     assert(result[i] == expected[i]);
   }
-  sycl::free(data,queue);
-  sycl::free(result,queue);
+  sycl::free(data, queue);
+  sycl::free(result, queue);
   return 0;
 }
