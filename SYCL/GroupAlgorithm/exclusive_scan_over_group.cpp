@@ -1,7 +1,6 @@
 // UNSUPPORTED: hip
 // RUN: %clangxx -fsycl -fsycl-targets=%sycl_triple %s -o %t.out
 // RUN: %GPU_RUN_PLACEHOLDER %t.out
-// UNSUPPORTED: ze_debug4,ze_debug-1
 
 // CPU and ACC not yet supported:
 // Unsupported SPIR-V module SPIRV module requires unsupported capability 6400
