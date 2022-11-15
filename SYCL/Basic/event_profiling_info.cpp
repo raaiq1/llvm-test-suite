@@ -20,6 +20,8 @@
 using namespace sycl;
 
 bool verifyProfiling(event Event) {
+  constexpr long acceptable_diff_nano = (long)10*10e9; //10 seconds
+
   auto Submit =
       Event.get_profiling_info<sycl::info::event_profiling::command_submit>();
   auto Start =
@@ -28,7 +30,10 @@ bool verifyProfiling(event Event) {
       Event.get_profiling_info<sycl::info::event_profiling::command_end>();
 
   assert(Submit <= Start);
+  assert( Start - Submit <= acceptable_diff_nano && "Event start and submit time difference not within acceptable range");
+  
   assert(Start <= End);
+  assert(End- Start <= acceptable_diff_nano && "Event end and start time difference not within acceptable range");
 
   bool Pass = sycl::info::event_command_status::complete ==
               Event.get_info<sycl::info::event::command_execution_status>();
