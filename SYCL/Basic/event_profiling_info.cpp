@@ -11,6 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+//Test might be flaky in level-zero as their clock time might wrap around to zero
 // Flaky with CUDA
 // UNSUPPORTED: cuda
 
