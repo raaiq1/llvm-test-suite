@@ -117,13 +117,12 @@ void worker() {
 
       std::unique_lock<std::mutex> lk(mt);
       cv.wait(lk, []() { return ops.size() > 0 || stop_worker; });
+      if (stop_worker)
+       return;
+      
       op = ops.front();
       ops.pop_front();
     }
-
-    if (stop_worker)
-      return;
-
     for (auto dep : op.deps) {
       // Wait for dependencies to complete
       while (dep.get_info<sycl::info::event::command_execution_status>() !=
