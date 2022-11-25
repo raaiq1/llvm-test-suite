@@ -110,8 +110,6 @@ ze_event_handle_t getEvent() {
 }
 
 void worker() {
-
-  int count1 = 0, count2 = 0;
   while (true) {
 
     operation op;
@@ -130,7 +128,6 @@ void worker() {
       // Wait for dependencies to complete
       while (dep.get_info<sycl::info::event::command_execution_status>() !=
              sycl::info::event_command_status::complete) {
-        count1++;
       }
     }
 
@@ -145,7 +142,6 @@ void worker() {
       auto status2 = op.return_event.template get_info<
                          sycl::info::event::command_execution_status>() ==
                      sycl::info::event_command_status::complete;
-      count2++;
 
       if (getenv("QUERY_STATUS") != nullptr) {
         auto ev1 = sycl::get_native<sycl::backend::ext_oneapi_level_zero>(
@@ -160,7 +156,6 @@ void worker() {
         break;
     }
 
-    printf("Insde loop one for: %d and loop2 for %d\n", count1, count2);
     old_ops.push_back(std::move(op));
   }
 }
