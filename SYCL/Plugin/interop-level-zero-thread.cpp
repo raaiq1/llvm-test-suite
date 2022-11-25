@@ -110,19 +110,27 @@ ze_event_handle_t getEvent() {
 }
 
 void worker() {
-  std::unique_lock<std::mutex> lk(mt);
 
+  int count1 = 0, count2 = 0;
   while (true) {
-    cv.wait(lk, []() { return ops.size() > 0 || stop_worker; });
+
+    operation op;
+    {
+
+      std::unique_lock<std::mutex> lk(mt);
+      cv.wait(lk, []() { return ops.size() > 0 || stop_worker; });
+      op = ops.front();
+      ops.pop_front();
+    }
+
     if (stop_worker)
       return;
-    auto op = ops.front();
-    ops.pop_front();
 
     for (auto dep : op.deps) {
       // Wait for dependencies to complete
       while (dep.get_info<sycl::info::event::command_execution_status>() !=
              sycl::info::event_command_status::complete) {
+        count1++;
       }
     }
 
@@ -137,6 +145,7 @@ void worker() {
       auto status2 = op.return_event.template get_info<
                          sycl::info::event::command_execution_status>() ==
                      sycl::info::event_command_status::complete;
+      count2++;
 
       if (getenv("QUERY_STATUS") != nullptr) {
         auto ev1 = sycl::get_native<sycl::backend::ext_oneapi_level_zero>(
@@ -151,6 +160,7 @@ void worker() {
         break;
     }
 
+    printf("Insde loop one for: %d and loop2 for %d\n", count1, count2);
     old_ops.push_back(std::move(op));
   }
 }
