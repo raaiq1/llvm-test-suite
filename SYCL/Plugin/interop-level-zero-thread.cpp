@@ -118,8 +118,8 @@ void worker() {
       std::unique_lock<std::mutex> lk(mt);
       cv.wait(lk, []() { return ops.size() > 0 || stop_worker; });
       if (stop_worker)
-       return;
-      
+        return;
+
       op = ops.front();
       ops.pop_front();
     }
